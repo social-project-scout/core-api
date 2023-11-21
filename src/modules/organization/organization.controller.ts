@@ -38,6 +38,10 @@ export class OrganizationController {
     @Body() createOrganizationDto: CreateOrganizationDto,
     @ReqUser() user: AuthUser,
   ) {
+    if (user.role !== 'admin') {
+      delete createOrganizationDto.active;
+    }
+
     return organizationDtoMapper(
       await this.organizationService.create({
         ...createOrganizationDto,
@@ -118,6 +122,10 @@ export class OrganizationController {
       throw new UnauthorizedException(
         'You are not authorized to update this organization!',
       );
+    }
+
+    if (user.role !== 'admin') {
+      delete updateOrganizationDto.active;
     }
 
     const updatedOrganization = await this.organizationService.update(

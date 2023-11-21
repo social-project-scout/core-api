@@ -33,6 +33,8 @@ export class AuthController {
   @Post('signUp')
   @Public()
   async signIsignUp(@Body() CreateUserDto: CreateUserDto) {
+    delete (CreateUserDto as CreateUserDto).active;
+
     return this.authService.signUp(CreateUserDto);
   }
 }

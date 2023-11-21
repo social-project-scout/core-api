@@ -123,6 +123,10 @@ export class UserController {
       throw new NotFoundException('User not found');
     }
 
+    if (user.role !== 'admin') {
+      delete updateUserDto.active;
+    }
+
     if (updateUserDto.email && updateUserDto.email === checkUser.email) {
       delete updateUserDto.email;
     }
