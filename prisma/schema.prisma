@@ -29,5 +29,36 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
+  ownedOrganizations  Organization[]
+  workOnOrganizations ManagersOnOrganization[]
+
   @@map("users")
+}
+
+model Organization {
+  id    String  @id @default(uuid())
+  name  String
+  photo String?
+
+  active    Boolean   @default(false)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdById String
+
+  workers ManagersOnOrganization[]
+
+  @@map("organizations")
+}
+
+model ManagersOnOrganization {
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  @@id([userId, organizationId])
+  @@map("managers_on_organizations")
 }

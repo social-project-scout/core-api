@@ -23,6 +23,7 @@ import { ReqUser } from '../auth/strategies/jwt.strategy';
 import { AuthUser } from '../auth/entities/User';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from '../common/services/file.service';
+import { Prisma } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
@@ -53,10 +54,32 @@ export class UserController {
       throw new UnauthorizedException('You are not authorized to list users');
     }
 
+    const where: Prisma.UserWhereInput = {};
+
+    if (search) {
+      where.OR = [
+        {
+          email: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          name: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
+
+    where.id = {
+      not: user.id,
+    };
+
     const data = await this.userService.findAll({
       pagination,
-      not: user.id,
-      search,
+      where,
     });
 
     return {

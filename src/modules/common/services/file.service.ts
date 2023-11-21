@@ -11,8 +11,6 @@ export class FileService {
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       region: process.env.AWS_REGION,
     });
-
-    console.log({ s3: this.s3 });
   }
 
   async uploadFile({

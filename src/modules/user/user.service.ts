@@ -30,39 +30,12 @@ export class UserService {
   }
 
   async findAll({
-    search,
-    not,
+    where = {},
     pagination: { limit, page, orderBy },
   }: {
-    search?: string;
-    not?: string;
+    where?: Prisma.UserWhereInput;
     pagination: PaginationOffsetParams;
   }) {
-    const where: Prisma.UserWhereInput = {};
-
-    if (search) {
-      where.OR = [
-        {
-          email: {
-            contains: search,
-            mode: 'insensitive',
-          },
-        },
-        {
-          name: {
-            contains: search,
-            mode: 'insensitive',
-          },
-        },
-      ];
-    }
-
-    if (not) {
-      where.id = {
-        not,
-      };
-    }
-
     const count = await this.prisma.user.count({
       where,
       orderBy,
